@@ -3,7 +3,6 @@ package com.rahul.practice.java8.basicFunctionalities;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Stream;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -24,6 +23,7 @@ class Reader {
 	private List<String> books;
 
 }
+
 
 public class FlatMapTest {
 
