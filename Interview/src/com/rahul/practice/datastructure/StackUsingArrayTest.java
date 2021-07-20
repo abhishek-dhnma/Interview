@@ -1,4 +1,4 @@
-package com.rahul.practice.basics.arrays;
+package com.rahul.practice.datastructure;
 
 import java.util.EmptyStackException;
 
@@ -33,6 +33,7 @@ class StackUsingArray {
 		if (isEmpty()) {
 			throw new EmptyStackException();
 		}
+		size--;
 		return array[--index];
 	}
 
