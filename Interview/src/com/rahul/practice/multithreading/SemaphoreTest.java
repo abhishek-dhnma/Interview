@@ -30,6 +30,7 @@ class SingleInstance {
 			sem.acquire();
 			connection++;
 			System.out.println("Permited" + connection);
+			Thread.sleep(2000);
 		} catch (InterruptedException ex) {
 			ex.printStackTrace();
 		} finally {
