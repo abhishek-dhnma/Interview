@@ -21,7 +21,8 @@ import java.util.concurrent.TimeUnit;
  * ArrayBlockingQueue
  * As the name suggests, an ArrayBlockingQueue uses the array data structure as a buffer.
  * Since it is an array, its capacity is fixed after declaration.
- * It provides fairness as an option. This means threads are given access to the buffer on a first-come, first-serve basis. Fairness is off by default. It can be turned on by placing the boolean value true inside the constructor.
+ * It provides fairness as an option. This means threads are given access to the buffer on a first-come, first-serve basis. 
+ * Fairness is off by default. It can be turned on by placing the boolean value true inside the constructor.
  */
 
 /**
