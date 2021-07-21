@@ -1,5 +1,6 @@
 package com.rahul.practice.datastructure;
 
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -22,6 +23,12 @@ interface MyListInterface<T> {
 
 	// returns the number of items in list right now
 	int size();
+
+	// detect loop using Floyd’s Cycle-Finding Algorithm
+	boolean detectLoopUsingFloyd();
+
+	// detect loop using HashMap, same complexity as above O(n)
+	boolean detectLoopUsingMap();
 
 	// returns true if list is empty, false otherwise
 	boolean isEmpty();
@@ -115,7 +122,7 @@ interface MyListInterface<T> {
 	void printOccurrence(T item);
 
 	// get new list by reversing one
-	MyList<T> reverse();
+	void reverse();
 
 	// returns the iterator to iterate through the list
 	Iterator<T> iterator();
@@ -154,13 +161,11 @@ class MyList<T> implements MyListInterface<T> {
 	private final Integer STARTING_INDEX = new Integer(0);
 
 	public MyList() {
-
 		this.head = null;
 		this.size = STARTING_SIZE;
 	}
 
 	private Node<T> getHeadNode() {
-
 		return head;
 	}
 
@@ -277,7 +282,6 @@ class MyList<T> implements MyListInterface<T> {
 
 		@Override
 		public boolean hasNext() {
-
 			return tempSize > 0;
 		}
 
@@ -565,7 +569,6 @@ class MyList<T> implements MyListInterface<T> {
 
 		// can use Map<String, MyList<T>.Node<T>> getNodeInfo(T item)
 		while (tempNode != null && tempNode.item.equals(itemAfter)) {
-
 			prevNode = tempNode;
 			tempNode = tempNode.next;
 		}
@@ -626,11 +629,11 @@ class MyList<T> implements MyListInterface<T> {
 			nextNode = currentNode.next;
 
 			while (nextNode != null) {
-//				if (currentNode.item < nextNode.item) {
-//					tempItem = nextNode.item;
-//					nextNode.item = currentNode.item;
-//					currentNode.item = tempItem;
-//				}
+				// if (currentNode.item < nextNode.item) {
+				// tempItem = nextNode.item;
+				// nextNode.item = currentNode.item;
+				// currentNode.item = tempItem;
+				// }
 				nextNode = nextNode.next;
 			}
 			currentNode = currentNode.next;
@@ -701,12 +704,32 @@ class MyList<T> implements MyListInterface<T> {
 	}
 
 	@Override
+	public void reverse() {
+		Node<T> prevNode = null;
+		Node<T> currentNode = head;
+		Node<T> nextNode = null;
+
+		if (head == null) {
+			System.out.println("UnderFlow");
+			return;
+		}
+
+		while (currentNode != null) {
+			nextNode = currentNode.next;
+			currentNode.next = prevNode;
+			prevNode = currentNode;
+			currentNode = nextNode;
+		}
+		head = prevNode;
+	}
+
+	@Override
 	public void printAll() {
 
 		Node<T> tempNode = head;
 
 		while (tempNode != null) {
-			System.out.println(tempNode.item);
+			System.out.print(tempNode.item + " ");
 			tempNode = tempNode.next;
 		}
 	}
@@ -789,20 +812,73 @@ class MyList<T> implements MyListInterface<T> {
 	@Override
 	public void printMiddle() {
 
-		Node<T> newNode = head;
-		Node<T> tempNode = head;
+		Node<T> slowNode = head;
+		Node<T> fastNode = head;
 		Node<T> prevNode = null;
 
-		while (tempNode != null && tempNode.next != null) {
-			prevNode = newNode;
-			newNode = newNode.next;
-			tempNode = tempNode.next.next;
+		while (fastNode != null && fastNode.next != null) {
+			prevNode = slowNode;
+			slowNode = slowNode.next;
+			fastNode = fastNode.next.next;
 		}
 		if (size % 2 != 0) {
-			System.out.println("Middle Element is: " + newNode.item);
+			System.out.println("Middle Element is: " + slowNode.item);
 		} else {
-			System.out.println("Middle Elements are: " + prevNode.item + " and " + newNode.item);
+			System.out.println("Middle Elements are: " + prevNode.item + " and " + slowNode.item);
 		}
+	}
+
+	@Override
+	public Iterator<T> iterator() {
+		return new MyListIterator();
+	}
+
+	@Override
+	public boolean detectLoopUsingFloyd() {
+		Node<T> slowNode = head;
+		Node<T> fastNode = head;
+		boolean flag = false;
+
+		if (head == null) {
+			System.out.println("UnderFlow:");
+			return flag;
+		}
+
+		while (slowNode != null && fastNode != null && fastNode.next != null) {
+			slowNode = slowNode.next;
+			fastNode = fastNode.next.next;
+
+			if (slowNode == fastNode) {
+				flag = true;
+				break;
+			}
+
+		}
+
+		return flag;
+	}
+
+	@Override
+	public boolean detectLoopUsingMap() {
+		Node<T> tempNode = head;
+		boolean flag = false;
+		HashSet<T> set = new HashSet<>();
+		
+		if (head == null) {
+			System.out.println("UnderFlow:");
+			return flag;
+		}
+
+		while (tempNode != null) {
+			if (set.contains(tempNode.item)) {
+				flag = true;
+				break;
+			}
+
+			set.add(tempNode.item);
+			tempNode = tempNode.next;
+		}
+		return flag;
 	}
 
 	@Override
@@ -818,16 +894,6 @@ class MyList<T> implements MyListInterface<T> {
 	@Override
 	public void printOccurrence(T item) {
 
-	}
-
-	@Override
-	public MyList<T> reverse() {
-		return null;
-	}
-
-	@Override
-	public Iterator<T> iterator() {
-		return new MyListIterator();
 	}
 
 }
@@ -856,12 +922,16 @@ public class MyListTest {
 
 		Iterator<Integer> itr = myList.iterator();
 		while (itr.hasNext()) {
-			System.out.println(itr.next());
+			System.out.print(itr.next() + " ");
 		}
 
-		System.out.println("Size:" + myList.size());
+		System.out.println("\nSize:" + myList.size());
 		System.out.println("IsEmpty:" + myList.isEmpty());
-		System.out.println("PrintMiddle:\n");
+		System.out.println("PrintMiddle:");
 		myList.printMiddle();
+		myList.reverse();
+		myList.printAll();
+		System.out.println("\nLoop Detected: " + myList.detectLoopUsingFloyd());
+		System.out.println("Loop Detected: " + myList.detectLoopUsingMap());
 	}
 }

@@ -38,7 +38,6 @@ class MyHashMap<K, V> implements MyHashMapInteface<K, V> {
 	private List<Node<K,V>> recordList;
 
 	public MyHashMap() {
-
 		this.recordList = new LinkedList<>();
 	}
 
