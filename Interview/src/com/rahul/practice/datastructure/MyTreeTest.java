@@ -113,6 +113,11 @@ interface MyBSTInterface<T extends Number> {
 
 	// Function to print spiral or Zigzag binary tree traversal
 	void printSpiral();
+
+	// The lowest common ancestor between two nodes n1 and n2 is defined as the
+	// lowest node in T that has both n1 and n2 as descendants (where we allow a
+	// node to be a descendant of itself).
+	void findLCA(Integer node1, Integer node2);
 }
 
 class MyBST<T extends Number> implements MyBSTInterface<Integer> {
@@ -922,6 +927,42 @@ class MyBST<T extends Number> implements MyBSTInterface<Integer> {
 			}
 			System.out.println("");
 		}
+	}
+
+	@Override
+	public void findLCA(Integer node1, Integer node2) {
+		if (root == null) {
+			System.out.println("UnderFlow:");
+			return;
+		}
+
+		finalLeastCommonAncestor(root, node1, node2);
+
+	}
+
+	private Node finalLeastCommonAncestor(Node tempNode, Integer node1, Integer node2) {
+		// Base case
+		if (tempNode == null)
+			return null;
+
+		// If either n1 or n2 matches with root's key,(Note that if a key is
+		// ancestor of other, then the ancestor key becomes LCA
+		if (tempNode.key == node1 || tempNode.key == node2)
+			return tempNode;
+
+		// Look for keys in left and right subtrees
+		Node left_lca = finalLeastCommonAncestor(tempNode.left, node1, node2);
+		Node right_lca = finalLeastCommonAncestor(tempNode.right, node1, node2);
+
+		// If both of the above calls return Non-NULL, then one key
+		// is present in once subtree and other is present in other,
+		// So this node is the LCA
+		if (left_lca != null && right_lca != null)
+			return tempNode;
+
+		// Otherwise check if left subtree or right subtree is LCA
+		return (left_lca != null) ? left_lca : right_lca;
+
 	}
 }
 
