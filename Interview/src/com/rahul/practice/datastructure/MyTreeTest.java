@@ -887,7 +887,41 @@ class MyBST<T extends Number> implements MyBSTInterface<Integer> {
 	}
 
 	private void printSpiral(MyBST<T>.Node tempRoot) {
-		
+
+		if (tempRoot == null) {
+			System.out.println("Tree is empty");
+			return;
+		}
+
+		Stack<Node> stackOne = new Stack<Node>();
+		Stack<Node> stackTwo = new Stack<Node>();
+		stackOne.push(tempRoot);
+		while (!stackOne.isEmpty() || !stackTwo.isEmpty()) {
+			// insert right to left in stack
+			while (!stackOne.isEmpty()) {
+				Node node = stackOne.pop();
+				System.out.print(node.key + " ");
+				if (node.right != null) {
+					stackTwo.push(node.right);
+				}
+				if (node.left != null) {
+					stackTwo.push(node.left);
+				}
+			}
+			System.out.println(" # ");
+			// insert left to right in stack
+			while (!stackTwo.isEmpty()) {
+				Node node = stackTwo.pop();
+				System.out.print(node.key + " ");
+				if (node.left != null) {
+					stackOne.push(node.left);
+				}
+				if (node.right != null) {
+					stackOne.push(node.right);
+				}
+			}
+			System.out.println("");
+		}
 	}
 }
 
@@ -941,6 +975,7 @@ public class MyTreeTest {
 		myTree.flatten();
 		System.out.println("InOrder:");
 		myTree.inOrder();
+		myTree.printSpiral();
 
 	}
 }
